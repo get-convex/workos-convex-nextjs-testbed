@@ -8,8 +8,7 @@ import type { User } from '@workos-inc/node';
 
 export default function Home() {
   const { user, signOut } = useAuth();
-  const { isAuthenticated, isLoading } = useConvexAuth();
-  console.log('convex auth state:', isAuthenticated, isLoading);
+  console.log('convex auth state:', useConvexAuth());
 
   return (
     <>
@@ -73,20 +72,6 @@ function Content() {
         </button>
       </p>
       <p>Numbers: {numbers?.length === 0 ? 'Click the button!' : (numbers?.join(', ') ?? '...')}</p>
-      <p>
-        Edit{' '}
-        <code className="text-sm font-bold font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded-md">
-          convex/myFunctions.ts
-        </code>{' '}
-        to change your backend
-      </p>
-      <p>
-        Edit{' '}
-        <code className="text-sm font-bold font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded-md">
-          app/page.tsx
-        </code>{' '}
-        to change your frontend
-      </p>
       <p>
         See the{' '}
         <Link href="/server" className="underline hover:no-underline">
