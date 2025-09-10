@@ -3,7 +3,7 @@
 See [@workos/tempalte-convex-nextjs-authkit](https://github.com/workos/template-convex-nextjs-authkit) for the recommened template;
 this repo is for discussion and testing.
 
-[link to example hosted on Vercel](asdf)
+[link to example hosted on Vercel](https://workos-convex-nextjs-testbed.previews.convex.dev/)
 
 To get this up, follow the instructions at the repo above.
 
