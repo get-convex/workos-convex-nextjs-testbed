@@ -1,6 +1,6 @@
 # Convex + Next.js + WorkOS AuthKit Testbed App
 
-See [@workos/template-convex-nextjs-authkit](https://github.com/workos/template-convex-nextjs-authkit) for the recommened template;
+See [@workos/template-convex-nextjs-authkit](https://github.com/workos/template-convex-nextjs-authkit) for the recommended Convex + AuthKit template;
 this repo is for discussion and testing.
 
 [link to example hosted on Vercel](https://workos-convex-nextjs-testbed.previews.convex.dev/)
@@ -49,8 +49,10 @@ Today `<Authenticated>` content never runs during SSR, during SSR the auth state
 
 ### Not specifying `{ expectAuth: true }`
 
-Specifying `{ expectAuth: true }` requires different code for different routes and unfortunatley blocks _all_ queries, not just authed ones.
+Specifying `{ expectAuth: true }` requires different code for different routes and unfortunately blocks _all_ queries, not just authed ones.
+
+It also doesn't work as well as `<Authenticated>` for switching between different auth token fetchers (see https://github.com/get-convex/convex-js/issues/82).
 
 - could we determine this based on some other list of authed routes, like in middleware?
-- should a special argument to `useQuery()` hooks annotate whether they require auth? Opt-int could go the other way.
+- should a special argument to `useQuery()` hooks annotate whether they require auth? Opt-int could go the other way. (see https://github.com/get-convex/convex-js/issues/69)
 - (deeper convex changes) to make the above work better could public functions declare their auth needs with typed middleware?
