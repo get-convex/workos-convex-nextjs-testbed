@@ -1,7 +1,7 @@
 'use client';
 
 import { Authenticated, Unauthenticated, useMutation, useQuery } from 'convex/react';
-import { api } from '../convex/_generated/api';
+import { api } from '../../convex/_generated/api';
 import Link from 'next/link';
 import { useAuth } from '@workos-inc/authkit-nextjs/components';
 import type { User } from '@workos-inc/node';
@@ -92,48 +92,6 @@ function Content() {
         </Link>{' '}
         for an example of loading data in a server component
       </p>
-      <div className="flex flex-col">
-        <p className="text-lg font-bold">Useful resources:</p>
-        <div className="flex gap-2">
-          <div className="flex flex-col gap-2 w-1/2">
-            <ResourceCard
-              title="Convex docs"
-              description="Read comprehensive documentation for all Convex features."
-              href="https://docs.convex.dev/home"
-            />
-            <ResourceCard
-              title="Stack articles"
-              description="Learn about best practices, use cases, and more from a growing
-            collection of articles, videos, and walkthroughs."
-              href="https://www.typescriptlang.org/docs/handbook/2/basic-types.html"
-            />
-          </div>
-          <div className="flex flex-col gap-2 w-1/2">
-            <ResourceCard
-              title="Templates"
-              description="Browse our collection of templates to get started quickly."
-              href="https://www.convex.dev/templates"
-            />
-            <ResourceCard
-              title="Discord"
-              description="Join our developer community to ask questions, trade tips & tricks,
-            and show off your projects."
-              href="https://www.convex.dev/community"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ResourceCard({ title, description, href }: { title: string; description: string; href: string }) {
-  return (
-    <div className="flex flex-col gap-2 bg-slate-200 dark:bg-slate-800 p-4 rounded-md h-28 overflow-auto">
-      <a href={href} className="text-sm underline hover:no-underline">
-        {title}
-      </a>
-      <p className="text-xs">{description}</p>
     </div>
   );
 }
@@ -142,7 +100,7 @@ function UserMenu({ user, onSignOut }: { user: User; onSignOut: () => void }) {
   return (
     <div className="flex items-center gap-2">
       <span className="text-sm">{user.email}</span>
-      <button onClick={onSignOut} className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600">
+      <button onClick={onSignOut} className="bg-red-500 text-white px-3 py-0.5 rounded-md text-sm hover:bg-red-600">
         Sign out
       </button>
     </div>

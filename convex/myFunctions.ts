@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { query, mutation, action } from './_generated/server';
 import { api } from './_generated/api';
 
@@ -52,10 +52,10 @@ export const myAction = action({
   },
 });
 
-export const getUser = query({
+export const getUserOrThrow = query({
   handler: async (ctx) => {
     const user = await ctx.auth.getUserIdentity();
-    if (!user) throw new Error('User not authenticated');
-    return user;
+    if (!user) throw new ConvexError('getUserOrThrow ran while Convex deployment did not have a valid JWT');
+    return user.subject;
   },
 });
