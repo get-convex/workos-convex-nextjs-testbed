@@ -9,6 +9,7 @@ export default async function ServerPage() {
     api.myFunctions.listNumbers,
     {
       count: 3,
+      throwIfNotAuthenticated: true,
     },
     { token: accessToken },
   );

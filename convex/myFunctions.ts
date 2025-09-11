@@ -5,14 +5,22 @@ import { api } from './_generated/api';
 export const listNumbers = query({
   args: {
     count: v.number(),
+    throwIfNotAuthenticated: v.boolean(),
   },
 
-  handler: async (ctx, args) => {
+  handler: async (ctx, args: { count: number; throwIfNotAuthenticated: boolean }) => {
     const numbers = await ctx.db
       .query('numbers')
       // Ordered by _creationTime, return most recent
       .order('desc')
       .take(args.count);
+    const subject = (await ctx.auth.getUserIdentity())?.subject ?? null;
+    if (!subject) {
+      console.error('User is not authenticated!');
+      if (args.throwIfNotAuthenticated) {
+        throw new ConvexError('Query ran while user was not authenticated');
+      }
+    }
     return {
       viewer: (await ctx.auth.getUserIdentity())?.subject ?? null,
       numbers: numbers.reverse().map((number) => number.value),
@@ -43,6 +51,7 @@ export const myAction = action({
   handler: async (ctx, args) => {
     const data = await ctx.runQuery(api.myFunctions.listNumbers, {
       count: 10,
+      throwIfNotAuthenticated: false,
     });
     console.log(data);
 

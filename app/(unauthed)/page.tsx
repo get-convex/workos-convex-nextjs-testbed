@@ -47,6 +47,7 @@ function Content() {
   const { viewer, numbers } =
     useQuery(api.myFunctions.listNumbers, {
       count: 10,
+      throwIfNotAuthenticated: true,
     }) ?? {};
   const addNumber = useMutation(api.myFunctions.addNumber);
 
