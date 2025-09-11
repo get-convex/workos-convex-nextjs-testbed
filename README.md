@@ -35,7 +35,18 @@ After hydration a new JWT is requested and queries start to run once a JWT is re
 - [app/(authed)/page.tsx](<./app/(authed)/server/page.tsx>) calls `withAuth()` which opts this route out of [static rendering](https://nextjs.org/docs/app/getting-started/partial-prerendering#static-rendering) and into [dynamic rendering](https://nextjs.org/docs/app/getting-started/partial-prerendering#dynamic-rendering) by accessing cookies in its implementation. This page does not use `<Authenticated>` to prevent authenticated queries from running.
 - [(authed)/layout.tsx](<./app/(authed)/layout.tsx>) renders the client-side component (`"use client"`) `ConvexClientProvider` with the `expectAuth` prop that causes _all_ queries not to run until the ConvexClient has a JWT.
 
-## Potential features
+# Repros of things that don't work
+
+### Not using `<Authenticated>` or `expectAuth`
+
+[/server-does-not-work](https://workos-convex-nextjs-testbed.previews.convex.dev/server-does-not-work) uses `withAuth` in a server component but doesn't
+pause the client to wait for auth.
+
+It's easier to see this issue in production.
+
+---
+
+## Ideas
 
 ### Passing a token from the server
 
