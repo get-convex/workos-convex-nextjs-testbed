@@ -9,7 +9,7 @@ To get this running locally follow the instructions at the repo above.
 
 # Patterns shown
 
-To use different layout.tsx code, this Next.js app uses [Route Groups](https://nextjs.org/docs/app/api-reference/file-conventions/route-groups) app/(authenticated) and app/(unauthenticated).
+Both views use `eagerAuth: true` in [middleware.ts](./middleware.ts) to make an access token available immediately on render.
 
 ### Client-side auth
 
@@ -20,8 +20,7 @@ During SSR no content renders, regardless of whether the user is logged in.
 After hydration the client requests a JWT if AuthKit says the user is logged in.
 
 - [middleware.ts](./middleware.ts) lists '/' as an "unauthenticated path" so AuthKit middleware will allow this route to render for logged-out users
-- [app/(unauthed)/page.tsx](<./app/(unauthed)/page.tsx>) uses `<Authenticated>`, `<Unauthenticated>`, and `<AuthLoading>` wrapper component to load different content and, critically, to wait to load content until the Convex client has a JWT
-- [(unauthed)/layout.tsx](<./app/(unauthed)/layout.tsx>) renders the client-side component (`"use client"`) `ConvexClientProvider` which interfaces with AuthKit hooks to provided updated JWTs.
+- [app/page.tsx](./app/page.tsx) uses `<Authenticated>`, `<Unauthenticated>`, and `<AuthLoading>` wrapper component to load different content and, critically, to wait to load content until the Convex client has a JWT
 
 ### Server-rendering data that requires auth
 
@@ -32,31 +31,26 @@ During SSR the user must be authenticated and authenticated queries can be made.
 After hydration a new JWT is requested and queries start to run once a JWT is received (due to `expectAuth: true`).
 
 - [middleware.ts](./middleware.ts) causes '/server' to only render for logged-in users
-- [app/(authed)/page.tsx](<./app/(authed)/server/page.tsx>) calls `withAuth()` which opts this route out of [static rendering](https://nextjs.org/docs/app/getting-started/partial-prerendering#static-rendering) and into [dynamic rendering](https://nextjs.org/docs/app/getting-started/partial-prerendering#dynamic-rendering) by accessing cookies in its implementation. This page does not use `<Authenticated>` to prevent authenticated queries from running.
-- [(authed)/layout.tsx](<./app/(authed)/layout.tsx>) renders the client-side component (`"use client"`) `ConvexClientProvider` with the `expectAuth` prop that causes _all_ queries not to run until the ConvexClient has a JWT.
+- [app/page.tsx](./app/server/page.tsx) calls `withAuth()` which opts this route out of [static rendering](https://nextjs.org/docs/app/getting-started/partial-prerendering#static-rendering) and into [dynamic rendering](https://nextjs.org/docs/app/getting-started/partial-prerendering#dynamic-rendering) by accessing cookies in its implementation. This page does not use `<Authenticated>` to prevent authenticated queries from running.
 
 # Repros of things that don't work
 
-### Not using `<Authenticated>` or `expectAuth`
+### Not using `<Authenticated>`
 
-[/server-does-not-work](https://workos-convex-nextjs-testbed.previews.convex.dev/server-does-not-work) uses `withAuth` in a server component but doesn't
-pause the client to wait for auth.
+[/server](https://workos-convex-nextjs-testbed.previews.convex.dev/server) doesn't use the `<Authenticated>` component, so if an auth refresh ever fails its out of luck: the queries will render anyway.
 
-It's easier to see this issue in production.
+Reproducing this is inconsistent.
 
 ---
 
-## Ideas
-
-### Passing a token from the server
-
-For mixed-auth pages like / it would be nice to get a token immediately if the user is logged in. This could allow `<Authenticated>` routes to run sooner client-side.
-
-- does this opt these routes in to dynamic rendering?
+# Ideas
 
 ### Using the `<Authenticated>` wrapper components on SSR'd pages
 
-Today `<Authenticated>` content never runs during SSR, during SSR the auth state is always "unauthenticated" or "
+Today `<Authenticated>` content never runs during SSR, during SSR the auth state is always "unauthenticated" or "loading." If `<Authenticated>` could be used during SSR then
+
+- server pages could take advantage of better logged-out behavior (unmount instead of query errors)
+- there'd be less flashes
 
 ### Not specifying `{ expectAuth: true }`
 

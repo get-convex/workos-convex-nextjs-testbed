@@ -5,9 +5,9 @@ import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithAuth } from 'convex/react';
 import { AuthKitProvider, useAuth, useAccessToken } from '@workos-inc/authkit-nextjs/components';
 
-export function ConvexClientProvider({ children, expectAuth }: { children: ReactNode; expectAuth?: boolean }) {
+export function ConvexClientProvider({ children }: { children: ReactNode }) {
   const [convex] = useState(() => {
-    return new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!, { expectAuth });
+    return new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
   });
   return (
     <AuthKitProvider>
@@ -19,14 +19,11 @@ export function ConvexClientProvider({ children, expectAuth }: { children: React
 }
 
 function useAuthFromAuthKit() {
-  const { user, loading } = useAuth();
-  const { accessToken, getAccessToken, refresh } = useAccessToken();
+  const { user, loading: isLoading } = useAuth();
+  const { getAccessToken, refresh } = useAccessToken();
 
-  const hasIncompleteAuth = (!!user && !accessToken) || (!user && !!accessToken);
-  const isLoading = loading || hasIncompleteAuth;
-  const authenticated = !!user && !!accessToken;
+  const isAuthenticated = !!user;
 
-  // Create a stable fetchAccessToken function
   const fetchAccessToken = useCallback(
     async ({ forceRefreshToken }: { forceRefreshToken?: boolean } = {}): Promise<string | null> => {
       if (!user) {
@@ -49,7 +46,7 @@ function useAuthFromAuthKit() {
 
   return {
     isLoading,
-    isAuthenticated: authenticated,
+    isAuthenticated,
     fetchAccessToken,
   };
 }
